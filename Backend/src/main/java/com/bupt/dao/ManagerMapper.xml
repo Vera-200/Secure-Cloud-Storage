@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace=绑定一个队形的Dao/mapper接口-->
+<mapper namespace="com.bupt.dao.ManagerMapper">
+    <select id="getAllUsers" resultType="User">
+        select distinct *
+        from webpan.user
+        order by userId
+    </select>
+
+    <select id="getAllGroups" resultType="Group">
+        select distinct *
+        from webpan.groupinfo
+        order by groupId
+    </select>
+
+    <select id="getAllApplies" resultType="Apply">
+        select distinct *
+        from webpan.apply
+        order by applyId desc
+    </select>
+    <select id="getApplyUsers" resultType="User">
+        select userId,userName,userPassword,userUsage,userStorage,userKey,userEmail,userType
+        from webpan.user, webpan.apply
+        where userId = applyRequestId
+    </select>
+
+
+    <update id = "setUserStorage">
+        update webpan.user
+        set userStorage = #{Size}
+        where userId = #{userId}
+    </update>
+    <update id = "setGroupStorage">
+        update webpan.groupinfo
+        set groupStorage = #{Size}
+        where groupId = #{groupId}
+    </update>
+
+
+    <update id = "refuseUserApply">
+        update webpan.apply
+        set applyStatus = 0
+        where applyRequestId = #{userId}
+    </update>
+    <update id = "refuseUser">
+        update webpan.user
+        set userStatus = 0
+        where userId = #{userId}
+    </update>
+
+    <update id = "agreeUserApply">
+        update webpan.apply
+        set applyStatus = 0
+        where applyRequestId = #{userId}
+    </update>
+    <update id = "agreeUser">
+        update webpan.user
+        set userStatus = 0, userStorage = userStorage + #{Size}
+        where userId = #{userId}
+    </update>
+
+    <delete id="DeleteApply">
+        delete
+        from webpan.apply
+        where applyRequestId = #{userId}
+    </delete>
+
+
+    <select id="GetUserbyid"  parameterType="int" resultType="User">
+        select distinct *
+        from webpan.user
+        where userId = #{userId}
+    </select>
+    <select id="GetGroupbyid"  parameterType="int" resultType="Group">
+        select distinct *
+        from webpan.groupinfo
+        where groupId = #{groupId}
+    </select>
+
+
+</mapper>

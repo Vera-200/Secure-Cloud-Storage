@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace=绑定一个对应的Dao/mapper接口-->
+<mapper namespace="com.bupt.dao.GroupMapper">
+
+    <insert id="registerGroup">
+        insert into webpan.groupinfo(groupId,groupManagerId, groupUsage, groupStorage)
+            value(#{groupId},#{userId},0.0,20.0)
+    </insert>
+    <insert id="addGroup">
+        insert into webpan.usergroupfile(userId, groupId)
+            value(#{userId},#{groupId})
+    </insert>
+    <select id="getGroupById"  resultType="Group">
+    select *
+    from webpan.groupinfo
+    where groupId = #{groupId}
+    </select>
+    <select id="getGroupNumById"  resultType="int">
+        select COUNT(*)
+        from webpan.groupinfo
+        where groupId = #{groupId}
+    </select>
+    <select id="getGroups" resultType="Group" parameterType="int">
+    select *
+    from webpan.groupinfo
+    where groupId in (
+        select distinct groupId
+        from webpan.usergroupfile
+        where userId = #{userId}
+    )
+    </select>
+    <select id="getGroupsManage" resultType="Group" parameterType="int">
+    select *
+    from webpan.groupinfo
+    where groupManagerId = #{userId}
+    </select>
+    <select id="getGroupInfoById" resultType="Group">
+    select *
+    from webpan.groupinfo
+    where groupId=#{groupId}
+    </select>
+
+    <insert id="InsertFileInfo">
+        insert into file (fileName,fileType,fileSize,fileUploadTime,fileOwner,fileGroup,fileHash,filePath)
+            value
+            (#{name},#{type},#{size},#{time},#{owner},#{group},#{hash},#{path})
+    </insert>
+
+    <select id="GetFileByGroup" resultType="file">
+        select *
+        from file
+        where fileGroup=#{groupId}
+    </select>
+<!--    <select id="judgeGroupById" parameterType="java.lang.Integer" resultType="java.lang.Integer">-->
+<!--    select count(*)-->
+<!--    from webpan.usergroupfile-->
+<!--    where #{groupId} in (-->
+<!--    select distinct groupId-->
+<!--    from webpan.usergroupfile-->
+<!--    where userId = #{userId}-->
+<!--    )-->
+<!--    </select>-->
+<!--    <insert id="addUserGroupFile">-->
+<!--        insert into webpan.usergroupfile(userId, groupId, fileId)-->
+<!--            value(#{userId},#{groupId},#{fileId})-->
+<!--    </insert>-->
+
+    <select id="GetFileById" resultType="File" >
+        select distinct * from webpan.file
+        where fileName = #{fileName} and fileType = #{fileType} and fileOwner = #{userId} and fileGroup = #{groupId}
+    </select>
+    <select id="GetFileById2" resultType="File" >
+        select distinct * from webpan.file
+        where fileName = #{fileName} and fileType = #{fileType} and fileGroup = #{groupId}
+    </select>
+
+    <select id="getUserByGroupFile" resultType="User">
+        select *from user
+        where userId= (
+            select fileOwner
+            from webpan.file
+            where fileId = #{fileId}
+              and fileGroup =#{groupId}
+        )
+    </select>
+
+    <update id="AddStorage">
+        update webpan.groupinfo
+        set groupUsage = groupUsage + #{size}
+        where groupId = #{groupId}
+    </update>
+
+    <update id="SubStorage">
+        update webpan.groupinfo
+        set groupUsage = groupUsage - #{size}
+        where groupId = #{groupId}
+    </update>
+
+    <delete id="DeleteFile">
+        delete
+        from file
+        where fileId = #{file_id}
+    </delete>
+</mapper>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace=绑定一个对应的Dao/mapper接口-->
+<mapper namespace="com.bupt.dao.FileMapper">
+
+
+    <insert id="InsertFileInfo">
+        insert into file (fileName,fileType,fileSize,fileUploadTime,fileOwner,fileHash,filePath)
+            value
+            (#{name},#{type},#{size},#{time},#{owner},#{hash},#{path})
+    </insert>
+
+    <update id="AddStorage">
+        update webpan.user
+        set userUsage = userUsage + #{size}
+        where userId = #{owner}
+    </update>
+
+    <update id="SubStorage">
+        update webpan.user
+        set userUsage = userUsage - #{size}
+        where userId = #{ownerId}
+    </update>
+
+    <delete id="DeleteFile">
+        delete
+        from file
+        where fileId = #{file_id} and fileGroup = -1
+    </delete>
+
+    <select id="GetFileById" resultType="File">
+        select distinct *
+        from file
+        where fileId = #{file_id} and fileGroup = -1
+    </select>
+
+    <select id="GetGroupFileById" resultType="File">
+        select distinct *
+        from file
+        where fileId = #{file_id} and fileGroup = #{group_id}
+    </select>
+    <select id="GetFileByName" resultType="File" >
+        select distinct * from webpan.file
+        where fileName = #{file_name} and fileOwner = #{owner_id} and fileType = #{file_type} and fileGroup = -1
+    </select>
+    <select id="GetOwnerByFile" resultType="User">
+        select distinct *
+        from user
+        where userId = (select fileOwner from file where fileId=#{file_id})
+    </select>
+    <update id="ChangeFileName">
+        update file
+        set fileName = #{file_name}, filePath = #{file_path}
+        where fileId = #{file_id} fileGroup = -1
+    </update>
+</mapper>

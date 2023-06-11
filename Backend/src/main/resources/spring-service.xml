@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       https://www.springframework.org/schema/context/spring-context.xsd">
+
+
+    <!--扫描service下的包-->
+    <context:component-scan base-package="com.bupt.service"/>
+
+    <!--将我们的所有业务类，注入到Spring，可以通过配置，或者注解实现-->
+    <bean id="UserServiceImpl" class="com.bupt.service.UserServiceImpl">
+        <property name="userMapper" ref="userMapper"/>
+    </bean>
+
+    <bean id="FileServiceImpl" class="com.bupt.service.FileServiceImpl">
+        <property name="fileMapper" ref="fileMapper"/>
+    </bean>
+
+    <bean id="GroupServiceImpl" class="com.bupt.service.GroupServiceImpl">
+        <property name="groupMapper" ref="groupMapper"/>
+    </bean>
+
+    <bean id="ManagerServiceImpl" class="com.bupt.service.ManagerServiceImpl">
+        <property name="managerMapper" ref="managerMapper"/>
+    </bean>
+
+
+
+
+    <!--声明式事务配置-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <!--注入数据源-->
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!--AOP横切事务支持-->
+
+</beans>

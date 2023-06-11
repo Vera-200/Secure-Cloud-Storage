@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace=绑定一个对应的Dao/mapper接口-->
+<mapper namespace="com.bupt.dao.UserMapper">
+
+    <insert id="register" parameterType="java.lang.String">
+        insert into webpan.user(userName,userPassword,userUsage,userStorage,userKey,userEmail,userType,userStatus)
+            value
+            (#{userName},#{userPassword},0.0,10.0,#{userKey},#{userEmail},'user',0)
+    </insert>
+
+    <select id="login" parameterType="java.lang.String" resultType="User">
+        select distinct *
+        from webpan.user
+        where userName = #{User} and userPassword = #{userPassword}
+           or userEmail = #{User} and userPassword = #{userPassword}
+           or userId = #{User} and userPassword = #{userPassword}
+    </select>
+
+    <!--    //绑定对应的接口id是接口中的哪个方法,参数类型，结果类型 加上数据库名 前面的是数据库的属性名，后面取出来前面方法传进来param里面的-->
+    <select id="queryUserById" parameterType="int" resultType="User">
+        select *
+        from webpan.user
+        where userId=#{userId}
+    </select>
+    <select id="queryUserByName" parameterType="String" resultType="User">
+        select *
+        from webpan.user
+        where userName=#{userName}
+    </select>
+    <select id="queryUserByEmail" parameterType="String" resultType="User">
+        select *
+        from webpan.user
+        where userEmail=#{userEmail}
+    </select>
+
+    <select id="checkName" resultType="java.lang.Integer" parameterType="java.lang.String">
+        select count(*)
+        from webpan.user
+        where userName = #{userName}
+    </select>
+    <select id="checkEmail" resultType="java.lang.Integer" parameterType="java.lang.String">
+        select count(*)
+        from webpan.user
+        where userEmail = #{userEmail}
+    </select>
+
+    <insert id="applyApply">
+        insert into webpan.Apply (applySize,applyStatus,applyRequestId)
+            value
+            (#{applySize},1,#{applyRequestId})
+    </insert>
+
+    <update id="applyUser">
+        update webpan.user
+        set userStatus = 1
+        where userName = #{userName}
+    </update>
+
+    <select id="getFileById" resultType="File">
+        select *
+        from webpan.file
+        where fileOwner = #{userId} and fileGroup = -1
+    </select>
+
+    <update id="changePwd">
+        update webpan.user
+        set userPassword=#{userPassword}
+        where userEmail=#{userEmail}
+    </update>
+
+    <!--    int register(@Param("userName")String name,@Param("userEmail")String email,@Param("userPassword")String pwd,@Param("userKey")String key);-->
+    <!--    User login(@Param("User")String user,@Param("userPassword")String pwd);-->
+    <!--    User queryUserById(@Param("userId") int id);-->
+    <!--    User queryUserByName(@Param("userName")String name);-->
+    <!--    User queryUserByEmail(@Param("userEmail")String email);-->
+
+
+</mapper>
